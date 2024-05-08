@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //用到了原型链/借用构造函数/原型式（对象之间）/寄生式函数
+
+      function inherit(subtype, supertype) {
+        subtype.prototype = Object.create(supertype.prototype);
+        Object.defineProperty(subtype.prototype, "constructor", {
+          enumerable: false, //构造器函数最好不要遍历
+          configurable: true,
+          writable: true,
+          value: subtype,
+        });
+      }
+
+      function Perosn(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+
+      Perosn.prototype.running = function () {
+        console.log("running");
+      };
+
+      function Student(name, age, sno, score) {
+        //重点：借用构造函数
+        Perosn.call(this, name, age);
+        this.sno = sno;
+        this.score = score;
+      }
+      inherit(Student, Perosn);
+      Student.prototype.studying = function () {
+        console.log("studying");
+      };
+
+      var stu1 = new Student("why", 18, 1.8, 111);
+      console.log(stu1);
+
+      stu1.running();
+      stu1.studying();
+      
+    </script>
+  </body>
+</html>

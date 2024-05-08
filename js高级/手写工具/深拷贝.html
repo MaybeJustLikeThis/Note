@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const info = {
+        name: "why",
+        age: 18,
+        friend: {
+          name: "kobe",
+        },
+      };
+
+      //2.浅拷贝
+      // {
+      //   const obj2 = { ...info };
+      //   obj2.name = "curry";
+      //   obj2.friend.name = "111";
+      //   console.log(info.friend.name); //111
+      //   console.log(info.name); //why
+      // }
+
+      //浅拷贝函数
+      // {
+      //   const obj3 = Object.assign({}, info);
+      //   obj3.friend.name = "222";
+      //   console.log(info.friend.name);
+      // }
+
+      //3深拷贝
+      //3.1 json方法
+      // const obj4 = JSON.parse(JSON.stringify(info));
+
+      //3.2 自建深拷贝函数
+      //循环引用的处理
+      const map = new WeakMap();
+
+      function deepCopy(originValue) {
+        if (!isObject(originValue)) {
+          return originValue;
+        }
+        debugger;
+
+        if (map.get(originValue)) {
+          return map.get(originValue);
+        }
+        //对数组类型的处理
+        const newObj = Array.isArray(originValue) ? [] : {};
+
+        map.set(originValue, newObj);
+
+        for (const key in originValue) {
+          newObj[key] = deepCopy(originValue[key]);
+        }
+        return newObj;
+      }
+
+      function isObject(value) {
+        const valueType = typeof value;
+        return (
+          value !== null && (valueType === "object" || valueType === "function")
+        );
+      }
+
+      const books = [
+        {
+          name: "黄金时代",
+          price: 28,
+        },
+        {
+          name: "你不知道的js",
+          price: 99,
+        },
+      ];
+      deepCopy(info);
+      const newBook = deepCopy(books);
+      console.log(newBook);
+      // console.log(deepCopy(info));
+    </script>
+  </body>
+</html>

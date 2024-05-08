@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class MyPromise {
+        static REJECTED = "rejected";
+        static PENDING = "pending";
+        static FULFILLED = "fulfilled";
+
+        value = undefined;
+        status = MyPromise.PENDING;
+        onFulfilledCallBacks = [];
+        onRejectedCallBacks = [];
+
+        constructor(execute) {
+          const resolve = (value) => {
+            if (this.status === MyPromise.PENDING) {
+              this.value = value;
+              this.status = MyPromise.FULFILLED;
+              this.onFulfilledCallBacks.forEach((func) => func(value));
+            }
+          };
+
+          const reject = (value) => {
+            if (this.status === MyPromise.PENDING) {
+              this.value = value;
+              this.status = MyPromise.REJECTED;
+              this.onRejectedCallBacks.forEach((func) => func(value));
+            }
+          };
+
+          try {
+            execute(resolve, reject);
+          } catch (error) {
+            reject(error);
+          }
+        }
+        //onFulfilled是一个在Promise被成功解决（fulfilled）时执行的回调函数。它是Promise的then方法的第一个参数。
+        then(onFulfilled, onRejected) {
+          onFulfilled =
+            typeof onFulfilled === "function"
+              ? onFulfilled
+              : (onFulfilled) => onFulfilled;
+          onRejected =
+            typeof onRejected === "function"
+              ? onRejected
+              : (onRejected) => onRejected;
+
+          return new MyPromise((resolve, reject) => {
+            // 处理已完成状态
+            if (this.status === MyPromise.FULFILLED) {
+              try {
+                queueMicrotask(() => {
+                  const result = onFulfilled(this.value);
+                  this.handlePromiseResult(result, resolve, reject);
+                });
+              } catch (error) {
+                reject(error);
+              }
+            }
+            // 处理已拒绝状态
+            else if (this.status === MyPromise.REJECTED) {
+              try {
+                queueMicrotask(() => {
+                  const result = onRejected(this.value);
+                  this.handlePromiseResult(result, resolve, reject);
+                });
+              } catch (error) {
+                reject(error);
+              }
+            }
+            // 处理异步状态
+            else {
+              this.onFulfilledCallBacks.push((value) => {
+                queueMicrotask(() => {
+                  const result = onFulfilled(value);
+                  this.handlePromiseResult(result, resolve, reject);
+                });
+              });
+              this.onRejectedCallBacks.push((value) => {
+                queueMicrotask(() => {
+                  const result = onRejected(value);
+                  this.handlePromiseResult(result, resolve, reject);
+                });
+              });
+            }
+          });
+        }
+
+        //handlePromiseResult方法用于处理Promise对象的结果。
+        handlePromiseResult(result, resolve, reject) {
+          // 如果result是一个MyPromise实例，则调用其then方法并传入resolve和reject作为参数。
+          if (result instanceof MyPromise) {
+            result.then(resolve, reject);
+          } else {
+            resolve(result);
+          }
+        }
+
+        static resolve = (value) => {
+          return new MyPromise((resolve, reject) => {
+            resolve(value);
+          });
+        };
+
+        static reject = (value) => {
+          return new MyPromise((resolve, reject) => {
+            reject(value);
+          });
+        };
+      }
+
+      new MyPromise((resolve, reject) => {
+      
+        resolve(111)
+      }).then(
+        (res) => {
+          console.log(res);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    </script>
+  </body>
+</html>

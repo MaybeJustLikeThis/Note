@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const obj = {
+        name: "why",
+      };
+      Object.defineProperty(obj, "name", {
+        configurable: false,
+      }); //无法确定是否设置成功
+
+      //1.用以前的方法
+      delete obj.name;
+      if (obj.name) {
+        console.log("存在");
+      }
+
+      //2.Reflect
+      if (Reflect.deleteProperty(obj, name)) {
+        //返回布尔值，100%确定成功与否
+        console.log("删除成功");
+      }
+    </script>
+  </body>
+</html>

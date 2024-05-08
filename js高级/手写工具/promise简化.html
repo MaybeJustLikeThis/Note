@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class MyPromise {
+        constructor(executor) {
+          // 初始化Promise的状态、值和错误
+          this.value = undefined;
+          this.error = undefined;
+          this.status = "pending";
+
+          // 存储成功态和失败态的回调函数
+          this.onResolveCallbacks = [];
+          this.onRejectCallbacks = [];
+
+          // 定义resolve函数，用于将Promise状态设置为fulfilled
+          const resolve = (value) => {
+            if (this.status === "pending") {
+              this.status = "fulfilled";
+              this.value = value;
+              this.executeCallbacks(this.onResolveCallbacks);
+            }
+          };
+
+          // 定义reject函数，用于将Promise状态设置为rejected
+          const reject = (error) => {
+            if (this.status === "pending") {
+              this.status = "rejected";
+              this.error = error;
+              this.executeCallbacks(this.onRejectCallbacks);
+            }
+          };
+
+          try {
+            // 执行用户提供的executor函数，并传入resolve和reject函数作为参数
+            executor(resolve, reject);
+          } catch (error) {
+            // 如果executor函数抛出异常，则将Promise状态设置为rejected
+            reject(error);
+          }
+        }
+
+        executeCallbacks(callbacks) {
+          // 遍历回调函数数组，并使用queueMicrotask将回调函数添加到微任务队列中执行
+          callbacks.forEach((callback) => {
+            queueMicrotask(() => {
+              try {
+                const x = callback(this.value);
+                // 处理回调函数的返回值x，并根据返回值的类型进行相应的处理
+                this.resolvePromise(
+                  x,
+                  callback.promise,
+                  callback.resolve,
+                  callback.reject
+                );
+              } catch (error) {
+                // 如果回调函数执行抛出异常，则将Promise状态设置为rejected
+                callback.reject(error);
+              }
+            });
+          });
+
+          // 执行完所有回调函数后，清空回调函数数组
+          callbacks.length = 0;
+        }
+
+        resolvePromise(x, promise, resolve, reject) {
+          // 处理循环引用的情况，如果promise和x指向同一个对象，将会抛出循环引用错误
+          if (promise === x) {
+            reject(new TypeError("Chaining cycle detected for promise"));
+          }
+
+          if (x instanceof MyPromise) {
+            // 如果x是一个MyPromise对象，等待其状态变化，并将结果传递给当前的promise
+            x.then(resolve, reject);
+          } else if (typeof x === "object" || typeof x === "function") {
+            if (x === null) {
+              resolve(x);
+            } else {
+              let then;
+              try {
+                then = x.then;
+              } catch (error) {
+                reject(error);
+              }
+
+              if (typeof then === "function") {
+                let called = false;
+
+                try {
+                  // 调用x的then方法，并传入成功和失败的回调函数
+                  then.call(
+                    x,
+                    (y) => {
+                      if (!called) {
+                        called = true;
+                        // 递归处理回调函数的返回值y
+                        this.resolvePromise(y, promise, resolve, reject);
+                      }
+                    },
+                    (r) => {
+                      if (!called) {
+                        called = true;
+                        reject(r);
+                      }
+                    }
+                  );
+                } catch (error) {
+                  if (!called) {
+                    reject(error);
+                  }
+                }
+              } else {
+                // 如果x不是一个具有then方法的对象，直接将其作为结果传递给当前的promise
+                resolve(x);
+              }
+            }
+          } else {
+            // 如果x不是一个对象或函数，直接将其作为结果传递给当前的promise
+            resolve(x);
+          }
+        }
+
+        then(onFulfilled, onRejected) {
+          // 检查onFulfilled和onRejected是否为函数，如果不是，则创建默认的identity函数
+          onFulfilled =
+            typeof onFulfilled === "function" ? onFulfilled : (value) => value;
+          onRejected =
+            typeof onRejected === "function"
+              ? onRejected
+              : (error) => {
+                  throw error;
+                };
+
+          // 创建一个新的Promise对象
+          const newPromise = new MyPromise((resolve, reject) => {
+            const executeCallback = (value) => {
+              try {
+                // 根据当前Promise的状态调用相应的回调函数，并获取返回值x
+                const x =
+                  this.status === "fulfilled"
+                    ? onFulfilled(value)
+                    : onRejected(value);
+                // 处理回调函数的返回值x，并根据返回值的类型进行相应的处理
+                this.resolvePromise(x, newPromise, resolve, reject);
+              } catch (error) {
+                // 如果回调函数执行抛出异常，则将新Promise的状态设置为rejected
+                reject(error);
+              }
+            };
+
+            if (this.status === "fulfilled" || this.status === "rejected") {
+              // 如果当前Promise的状态已经是fulfilled或rejected，则将回调函数添加到微任务队列中执行
+              queueMicrotask(() => {
+                executeCallback(
+                  this.status === "fulfilled" ? this.value : this.error
+                );
+              });
+            } else if (this.status === "pending") {
+              // 如果当前Promise的状态是pending，则将回调函数封装为对象，并添加到对应的回调数组中
+              this.onResolveCallbacks.push({
+                promise: newPromise,
+                resolve,
+                reject,
+                callback: executeCallback,
+              });
+              this.onRejectCallbacks.push({
+                promise: newPromise,
+                resolve,
+                reject,
+                callback: executeCallback,
+              });
+            }
+          });
+
+          // 返回新的Promise对象
+          return newPromise;
+        }
+      }
+      let i = true;
+      let pro = new MyPromise((resolve, reject) => {
+        if (i == true) {
+          resolve(1111);
+        } else {
+          reject(222);
+        }
+      });
+
+      pro
+        .then((res) => {
+          console.log(res);
+        })
+        .then((res) => {
+          console.log(res);
+        })
+       
+    </script>
+  </body>
+</html>

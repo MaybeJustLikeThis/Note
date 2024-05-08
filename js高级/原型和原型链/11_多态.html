@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class Shape {
+        getArea() {}
+      }
+      class Retangle extends Shape {
+        constructor(width, height) {
+          super();
+          this.width = width;
+          this.height = height;
+        }
+
+        getArea() {
+          return this.width * this.height;
+        }
+      }
+
+      class Circle extends Shape {
+        constructor(radius) {
+          super();
+          this.radius = radius;
+        }
+
+        getArea() {
+          return this.radius * this.radius * 3.14;
+        }
+      }
+
+      var rect1 = new Retangle(100, 200);
+      var c1 = new Circle(10);
+    </script>
+  </body>
+</html>

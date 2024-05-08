@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button>按钮</button>
+    <input type="text" />
+
+    <script>
+      function debounece(fn, delay) {
+        let timer = null;
+        return function _debounce(...args) {
+          if (timer) {
+            clearTimeout(timer);
+          }
+          timer = setTimeout(() => {
+            fn.apply(this, args); 
+          }, delay);
+        };
+      }
+    </script>
+    <script>
+      const inpueEl = document.querySelector("input");
+
+      let counter = 1;
+      inpueEl.oninput = debounece(function (event) {
+        console.log("发送请求", this.value, event);
+      }, 1000);
+    </script>
+  </body>
+</html>

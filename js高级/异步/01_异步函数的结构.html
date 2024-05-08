@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //普通函数
+      //   function foo() {}
+      //   const bar = function () {};
+      //   const baz = () => {};
+
+      //生成器函数
+      function* iterator() {}
+
+      //异步函数
+      async function foo() {
+        //-> Promise.resolve(321)
+        "abc".filter();
+        return 321;
+      }
+
+      foo()
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          // 处理错误
+          console.log(err);
+          // 继续执行其他操作
+        });
+    </script>
+  </body>
+</html>

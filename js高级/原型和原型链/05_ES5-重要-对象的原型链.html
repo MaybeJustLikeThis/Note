@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //   {}的本质
+      //   var info = {};
+      //   var info = new Object();
+      //   console.log(info.__proto__ === Object.prototype); 二者效果一致
+
+      var obj = {
+        name: "xxx",
+        age: 18,
+      };
+
+      //查找顺序
+      //1.obj上面找到
+      //2.obj.__proto__上面查找
+      //3.obj.__proto__.__proto__-->null 结束
+
+      //改造原型链
+      obj.__proto__ = {
+        // message:"hello"
+      };
+
+      obj.__proto__.__proto__ = {
+        message: "hello",
+      };
+
+      console.log(obj.message);
+      
+    </script>
+  </body>
+</html>

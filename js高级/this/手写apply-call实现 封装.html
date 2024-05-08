@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function foo(name, age) {
+        console.log(this, name, age);
+      }
+
+      //封装函数
+      function execFn(thisArg, OtherArgs, fn) {
+        //1.获取thisArg，并且保证是一个对象类型
+        thisArg =
+          thisArg === null || thisArg === undefined ? window : Object(thisArg);
+
+        Object.defineProperty(thisArg, "fn", {
+          configurable: true,
+          enumerable: false,
+          value: fn, //把值绑定 foo
+        });
+        thisArg.fn(...OtherArgs);
+        delete thisArg.fn;
+      }
+
+      //封装到原型中(少加一个参数)
+      Function.prototype.hyexec = function (thisArg, OtherArgs) {
+        //1.获取thisArg，并且保证是一个对象类型
+        thisArg =
+          thisArg === null || thisArg === undefined ? window : Object(thisArg);
+
+        Object.defineProperty(thisArg, "fn", {
+          configurable: true,
+          enumerable: false,
+          value: this, //把值绑定 foo
+        });
+        thisArg.fn(...OtherArgs);
+        delete thisArg.fn;
+      };
+
+      //1.给函数对象添加方法
+      Function.prototype.hyapply = function (thisArg, OtherArgs) {
+        this.hyexec(thisArg, OtherArgs);
+      };
+
+      foo.hyapply({ name: "why" }, ["james", 30]);
+
+      //2.给函数对象添加方法：hycall
+      Function.prototype.hycall = function (thisArg, ...OtherArgs) {
+        this.hyexec(thisArg, OtherArgs);
+      };
+
+      foo.hycall({ name: "why" }, "kobe", 30);
+    </script>
+  </body>
+</html>

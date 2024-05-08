@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const obj = {
+        name: "why",
+        age: 19,
+        height: 1.88,
+      };
+      //1.创建代理对象
+      const objProxy = new Proxy(obj, {
+        set:function(target,key,newValue){
+           	console.log(`监听:给${key}设置了新的值:`,newValue)
+            target[key] = newValue;
+        },
+        get:function(target,key){
+            console.log("监听:监听name的获取")
+            return target[key]
+        }
+      });
+
+      //2.对obj的所有操作,应该去操作objProxy
+      console.log(objProxy.name);
+      objProxy.name = "kobe";
+      console.log(objProxy.name);
+
+        
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const names = ["abc", "cba", "nba"];
+      const nums = [111, 222, 333, 4444];
+
+      function* createArrayIterator(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          yield arr[i];
+        }
+      }
+
+      const namesIterator = createArrayIterator(names);
+      console.log(namesIterator.next());
+      console.log(namesIterator.next());
+      console.log(namesIterator.next());
+      console.log(namesIterator.next());
+    </script>
+  </body>
+</html>

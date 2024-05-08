@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function* foo() {
+        console.log("11111");
+        yield console.log("aaa");
+        console.log("2222222");
+        yield;
+        console.log("444444");
+      }
+      //调用生成器函数，返回一个生成器对象
+      const generator = foo();
+      // 调用next方法
+      generator.next();
+      generator.next();
+      generator.next();
+    </script>
+  </body>
+</html>

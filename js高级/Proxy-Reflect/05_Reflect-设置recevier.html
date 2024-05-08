@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const obj = {
+        _name: "why",
+        set name(newValue) {
+          console.log(this);
+          // this._name = newValue;//为了监听这一步，但是这样做监听不到
+          // objProxy._name =newValue//这样可以
+          this._name = newValue; // 在代理对象setter添加receiver参数之后可以这样改
+        },
+        get name() {
+          return this._name;
+        },
+      };
+
+      // console.log(obj.name)
+
+      const objProxy = new Proxy(obj, {
+        set: function (target, key, newValue, receiver) {
+          //target[key] = newValue;
+
+          //好处一,代理对象的目的:不再直接操作原对象
+          //好处二：可以更加明确的判断这次操作是否成功，原来则会没有提示
+          //好处三：receiver 就是外层Proxy对象
+          //Reflect.set/get最后一个参数，可以决定对象访问器setter/getter的this指向
+          // console.log(receiver===objProxy);
+          console.log("set");
+          const isSuccess = Reflect.set(target, key, newValue, receiver);
+          if (!isSuccess) {
+            throw new Error(`set${key}failure`);
+          }
+        },
+        get: function (target, key, receiver) {
+          console.log("get");
+          return Reflect.get(target, key, receiver);
+        },
+      });
+
+      //操作代理对象
+      objProxy.name = "kobe";
+      console.log(objProxy.name);
+    </script>
+  </body>
+</html>

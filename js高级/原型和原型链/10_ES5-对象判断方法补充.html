@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="./inherit.js"></script>
+    <script>
+      var obj = {
+        name: "why",
+        age: 18,
+      };
+      var info = createObject(obj);
+      info.address = "china";
+      //hasOwnProperty()  只判断当前对象
+      console.log(info.address);
+      console.log(info.hasOwnProperty("name")); //false\
+
+      //in  操作符     沿着原型链寻找
+      console.log("name" in info); //true
+
+      //instanceof 用于检测构造函数 (Person、Student类)的pototype，是否出现在某个实例对象的原型链上
+      function Student() {}
+      var stu = new Student();
+      console.log(stu instanceof Student);
+
+      //isPrototypeOF 用于检测某个对象，是否出现在某个实例对象的原型链上
+      //用于判断对象之间的继承
+      console.log(Student.prototype.isPrototypeOf(stu)); //true
+    </script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //将infos变成一个可迭代对象
+      /*
+        1.必须实现一个特定的函数:[Symbol.iterator];
+        2.这个函数需要返回一个迭代器(这个迭代器用于迭代当前的对象);
+        */
+      //1.迭代infos中的friends属性
+      // const infos = {
+      //   friends: ["kobe", "james", "curry"],
+      //   [Symbol.iterator]: function () {
+      //     let index = 0;
+      //     const infosIterator = {
+      //       next: () => {
+      //         if (index < this.friends.length) {
+      //           return { done: false, value: this.friends[index++] };
+      //         } else {
+      //           return { done: true };
+      //         }
+      //       },
+      //     };
+      //     return infosIterator;
+      //   },
+      // };
+
+      //2.迭代infos中的key/value
+      const infos = {
+        name: "why",
+        age: 18,
+        height: 1.88,
+        [Symbol.iterator]: function () {
+          // const keys = Object.keys(this); 键
+          // const values = Object.values(this); 值
+          const entries = Object.entries(this); //键值对
+          let index = 0;
+          const Iterator = {
+            next: () => {
+              if (index < entries.length) {
+                return { done: false, value: entries[index++] };
+              } else {
+                return { done: true };
+              }
+            },
+            return: () => {
+              console.log("中断");
+              return { done: true };
+            },
+          };
+          return Iterator;
+        },
+      };
+
+      //   console.log(infosIterator.next());
+      //可迭代对象必然具备下面的特点
+      // const iterator = infos[Symbol.iterator]();
+      // console.log(iterator.next());
+      // console.log(iterator.next());
+      // console.log(iterator.next());
+      // console.log(iterator.next());
+
+      //可迭代对象可以使用for of
+      for (const item of infos) {
+        const [key, value] = item;
+        console.log(key, value);
+      }
+
+      //可迭代对象必然有一个[Symbol.iterator]
+      //数组是一个可迭代对象
+      // const stus = ["张三", "李四", "王五"];
+      // console.log(stus[Symbol.iterator]);
+      // const stusIterator = stus[Symbol.iterator]();
+      // console.log(stusIterator.next());
+      // console.log(stusIterator.next());
+      // console.log(stusIterator.next());
+      // console.log(stusIterator.next());
+    </script>
+  </body>
+</html>

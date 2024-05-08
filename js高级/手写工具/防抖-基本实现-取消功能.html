@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button>按钮</button>
+    <input type="text" />
+    <button class="cancel">取消</button>
+    <script>
+      //1.接收什么参数
+      //回调函数
+      //延迟时间
+      //2.返回什么值
+      //3.内部实现
+      function debounece(fn, delay) {
+        //1 用于记录上一次事件触发的timer
+        let timer = null;
+        //2.触发事件时执行的函数
+        const _debounce = function (...args) {
+          //如有更多次触发 ,取消上一次计时
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(() => {
+            fn.apply(this, args);
+            timer = null; //执行过函数之后,将timer置为null
+          }, delay);
+        };
+
+        _debounce.cancel = function () {
+          if (timer) clearTimeout(timer);
+        };
+        //返回一个新函数
+        return _debounce;
+      }
+    </script>
+
+    <script>
+      const inpueEl = document.querySelector("input");
+      const cancelEl = document.querySelector(".cancel");
+
+      let counter = 1;
+      const debouneceFn = debounece(function (event) {
+        console.log("发送请求", this.value, event);
+      }, 1000);
+
+      inpueEl.oninput = debouneceFn;
+      //实现取消功能
+      cancelEl.onclick = function () {
+        debouneceFn.cancel();
+      };
+    </script>
+  </body>
+</html>

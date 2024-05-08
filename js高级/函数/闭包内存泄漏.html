@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 造成大量内存 -->
+    <button class="create"></button>
+    <!-- 释放内存 -->
+    <button class="destroy"></button>
+
+    <script>
+      function createArray() {
+        var arr = new Array(1024 * 1024).fill(1);
+        // 此函数存在使 arr永不被回收
+        function test() {
+          console.log(arr);
+        }
+        // 必须返回才能有引用
+        return test;
+      }
+
+      var totalarr = [];
+      var createBtnEL = document.querySelector(".create");
+      var destroyBtnEL = document.querySelector(".destroy");
+      createBtnEL.onclick = function () {
+        for (let i = 0; i < 100; i++) {
+          //这里引用了createArray（）
+          total.push(createArray());
+        }
+        console.log(totalarr.length);
+      };
+      destroyBtnEL.onclick = function () {
+        totalarr = null;
+      };
+    </script>
+  </body>
+</html>

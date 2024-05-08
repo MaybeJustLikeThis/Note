@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const names = ["abc", "cba", "nba"];
+
+      //创建names迭代器
+      let index = 0;
+      const nameIterator = {
+        next: function () {
+          //done属性,value属性
+
+          if (index < names.length) {
+            return {
+              done: false,
+              value: names[index++],
+            };
+          } else {
+            return {
+              done: true,
+            };
+          }
+          s;
+        },
+      };
+      console.log(nameIterator.next());
+      console.log(nameIterator.next());
+      console.log(nameIterator.next());
+      console.log(nameIterator.next());
+    </script>
+  </body>
+</html>

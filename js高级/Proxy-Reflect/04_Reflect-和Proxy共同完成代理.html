@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //   const obj = {
+      //     name: "why",
+      //   };
+
+      //   const objProxy = new Proxy(obj, {
+      //     set: function (target, key, newValue, receiver) {
+      //       //target[key] = newValue;
+
+      //       //好处一,代理对象的目的:不再直接操作原对象
+      //       //好处二：可以更加明确的判断这次操作是否成功，原来则会没有提示
+      //       const isSuccess = Reflect.set(target, key, newValue);
+      //       if (!isSuccess) {
+      //         throw new Error(`set${key}failure`);
+      //       }
+      //     },
+      //     get: function () {},
+      //   });
+
+      //   objProxy.name = "kobe";
+      //   console.log(obj);
+      let a = [];
+      console.log(a === Object);//false
+      console.log(typeof(a))//object
+      console.log(typeof(function(){}))
+      console.log(null ==undefined)
+    </script>
+  </body>
+</html>

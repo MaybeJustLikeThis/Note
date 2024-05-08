@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .div {
+        width: 100px;
+        height: 200px;
+        border: 10px solid black;
+        background-color: #471515;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="div"></div>
+    <!-- <script>
+      console.log("1");
+
+      setTimeout(() => {
+        console.log("2");
+        Promise.resolve().then(() => console.log("3"));
+      });
+
+      Promise.resolve().then(() => console.log("4"));
+
+      ty();
+
+      console.log("5");
+
+      function ty(params) {
+        console.log(6);
+      }
+
+      //15423
+    </script> -->
+    <script>
+      let promise = new Promise((resolve, reject) => {
+        resolve(111);
+      });
+      promise
+        .then((res) => {
+          console.log(res);
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    </script>
+  </body>
+</html>

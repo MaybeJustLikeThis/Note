@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function exeCode(counter, success, failure) {
+        //异步任务
+        setTimeout(() => {
+          if (counter > 0) {
+            console.log("hello");
+            //在某一个时刻只需要回调传入的函数
+            success();
+          } else {
+            failure();
+          }
+        }, 3000);
+      }
+
+      //ES5之前,处理异步的代码就是都是这样的
+      exeCode(
+        100,
+        (value) => {
+          console.log("回调函数执行完毕 ");
+        },
+        (err) => {
+          console.log("执行失败");
+        }
+      );
+    </script>
+  </body>
+</html>

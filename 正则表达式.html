@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>js实现 选中文本 加样式</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .toolBox {
+        width: 200px;
+        height: 30px;
+        display: flex;
+        background: black;
+        color: white;
+        /* display: none; */
+        cursor: pointer;
+        z-index: 999;
+      }
+
+      .toolBox div {
+        width: auto;
+        height: 100%;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="toolBox">
+      <div>下划线 |</div>
+      <div>标注背景色 |</div>
+      <div>改变字体颜色</div>
+    </div>
+    <div class="text">
+      先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。然侍卫之臣不懈于内，忠志之士忘身于外者，盖追先帝之殊遇，欲报之于陛下也。诚宜开张圣听，以光先帝遗德，恢弘志士之气，不宜妄自菲薄，引喻失义，以塞忠谏之路也。
+      宫中府中，俱为一体，陟罚臧否，不宜异同。若有作奸犯科及为忠善者，宜付有司论其刑赏，以昭陛下平明之理，不宜偏私，使内外异法也。
+      侍中、侍郎郭攸之、费祎、董允等，此皆良实，志虑忠纯，是以先帝简拔以遗陛下。愚以为宫中之事，事无大小，悉以咨之，然后施行，必能裨补阙漏，有所广益。
+      将军向宠，性行淑均，晓畅军事，试用于昔日，先帝称之曰能，是以众议举宠为督。愚以为营中之事，悉以咨之，必能使行阵和睦，优劣得所。
+      亲贤臣，远小人，此先汉所以兴隆也；亲小人，远贤臣，此后汉所以倾颓也。先帝在时，每与臣论此事，未尝不叹息痛恨于桓、灵也。侍中、尚书、长史、参军，此悉贞良死节之臣，愿陛下亲之信之，则汉室之隆，可计日而待也。
+      臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。先帝不以臣卑鄙，猥自枉屈，三顾臣于草庐之中，咨臣以当世之事，由是感激，遂许先帝以驱驰。后值倾覆，受任于败军之际，奉命于危难之间，尔来二十有一年矣。
+      先帝知臣谨慎，故临崩寄臣以大事也。受命以来，夙夜忧叹，恐托付不效，以伤先帝之明，故五月渡泸，深入不毛。今南方已定，兵甲已足，当奖率三军，北定中原，庶竭驽钝，攘除奸凶，兴复汉室，还于旧都。此臣所以报先帝而忠陛下之职分也。至于斟酌损益，进尽忠言，则攸之、祎、允之任也。
+      愿陛下托臣以讨贼兴复之效，不效，则治臣之罪，以告先帝之灵。若无兴德之言，则责攸之、祎、允等之慢，以彰其咎；陛下亦宜自谋，以咨诹善道，察纳雅言，深追先帝遗诏，臣不胜受恩感激。
+      今当远离，临表涕零，不知所言。今当远离,今当远离
+    </div>
+    <div id="form-container"></div>
+  </body>
+  <script name="划线正则">
+    let toolBox = document.getElementsByClassName("toolBox")[0];
+    let textDom = document.getElementsByClassName("text")[0];
+    let val = "";
+    toolBox.onclick = function (e) {
+      console.log(e.target);
+      let tool = e.target;
+      let toolTxt = tool.innerText;
+      if (toolTxt.indexOf("划线") > -1) {
+        add(1, val);
+      } else if (toolTxt.indexOf("标注背景色") > -1) {
+        add(2, val);
+      } else {
+        add(3, val);
+      }
+    };
+    //鼠标监听,当释放鼠标的时候，调用testSelection()方法。
+    textDom.onmouseup = function () {
+      val = testSelection();
+      // console.log(val)
+    };
+    function testSelection() {
+      //获取Selection对象
+      let selection = window.getSelection();
+      //调用selection对象的toString()方法就可以获取鼠标拖动选中的文本。
+      console.log("选中的文本为：");
+      console.log(selection);
+      //选中的值
+      let str = selection.toString();
+      return str;
+    }
+
+    function replaceAllWithOverlap(str, searchValue, replaceValue) {
+      let result = "";
+      let lastIndex = 0;
+      const regex = new RegExp(searchValue, "g");
+      let match;
+
+      while ((match = regex.exec(str)) !== null) {
+        const { index } = match;
+
+        result += str.slice(lastIndex, index);
+        result += replaceValue;
+
+        lastIndex = index + 1;
+        regex.lastIndex = lastIndex;
+      }
+
+      result += str.slice(lastIndex);
+
+      return result;
+    }
+
+    function add(type, str) {
+      let textDom = document.getElementsByClassName("text")[0];
+      let text = textDom.innerHTML;
+      //匹配传入的搜索值不区分大小写 i表示不区分大小写，g表示全局搜索  匹配标签
+      let rReg = new RegExp(`${str}`, "g");
+
+      text = text.replace(/\s*/g, "");
+      //替换后的值
+      let rHtml = "";
+      if (type == 1) {
+        rHtml = replaceAllWithOverlap(
+          text,
+          rReg,
+          `<span style="color:red;text-decoration:underline;">${str}</span>`
+        );
+      } else if (type == 2) {
+        rHtml = replaceAllWithOverlap(
+          text,
+          rReg,
+          `<span style="color:red;text-decoration:underline;">${str}</span>`
+        );
+      } else {
+        rHtml = replaceAllWithOverlap(
+          text,
+          rReg,
+          `<span style="color:red;text-decoration:underline;">${str}</span>`
+        );
+      }
+      //   console.log(rHtml);
+      textDom.innerHTML = rHtml;
+    }
+  </script>
+  <script name="注释正则">
+    // let myreg = new RegExp("[a-zA-Z0-9]");
+    // let res = myreg.exec("caaaaaady");
+    // console.log(res);
+    const myreg = new RegExp("\\/\\*(.*?)\\*\\/", "g");
+    const str =
+      "/* This is a comment */ /* This is a comment */ /* This is a comment */ /*sadasdasdas8*/";
+    const matches = [];
+    let match;
+
+    while ((match = myreg.exec(str)) !== null) {
+      matches.push(match[1]);
+    }
+
+    console.log(matches);
+  </script>
+  <script name="全局错误捕获">
+    //     要在项目开发中全局捕获异常，您可以使用以下方法之一：
+
+    // 使用全局的错误事件监听器：在 JavaScript 中，可以使用 window.onerror 事件处理程序来全局捕获未被捕获的异常。通过设置 window.onerror，您可以定义一个处理函数，用于处理发生的错误。例如：
+
+    window.onerror = function (error) {
+      // 捕获到全局错误
+      console.error("发生错误:111", error); 
+      // 显示错误提示给用户
+      alert("发生错误，请稍后重试！");
+    };
+    // 在这个示例中，当任何未被捕获的异常发生时，window.onerror 事件处理程序将被触发。您可以在处理函数中执行适当的错误处理操作，例如在控制台输出错误信息或向用户显示错误提示。
+
+    // 使用全局的 Promise 错误处理：如果您的代码使用了 Promise，并且您希望捕获 Promise 中的未处理异常，您可以使用 unhandledrejection 事件来监听未处理的 Promise 错误。例如：
+
+    window.addEventListener("unhandledrejection", function (event) {
+      // 捕获到未处理的 Promise 错误
+      console.error("未处理的 Promise 错误:", event.reason);
+      // 显示错误提示给用户
+      alert("发生错误，请稍后重试！");
+    });
+    window.addEventListener("unhandledrejection", function (event) {});
+    // 在这个示例中，当未处理的 Promise 错误发生时，unhandledrejection 事件将被触发。您可以在事件处理函数中执行适当的错误处理操作。
+  </script>
+
+  <script name="配置生成表单">
+    // 配置示例
+    const formConfig = [
+      {
+        type: "text",
+        label: "Name",
+        name: "name",
+        placeholder: "Enter your name",
+      },
+      {
+        type: "email",
+        label: "Email",
+        name: "email",
+        placeholder: "Enter your email",
+      },
+      {
+        type: "email",
+        label: "Email",
+        name: "email",
+        placeholder: "Enter your email",
+      },
+      {
+        type: "email",
+        label: "Email",
+        name: "email",
+        placeholder: "Enter your email",
+      },
+      // 更多表单项配置...
+    ];
+
+    // 根据配置生成表单项
+    function generateFormItems(config) {
+      const formContainer = document.getElementById("form-container");
+
+      config.forEach((itemConfig) => {
+        // 创建表单项元素
+        const inputElement = document.createElement("input");
+        inputElement.type = itemConfig.type;
+        inputElement.name = itemConfig.name;
+        inputElement.placeholder = itemConfig.placeholder;
+
+        // 添加其他属性
+        for (const prop in itemConfig) {
+          if (prop !== "type" && prop !== "name" && prop !== "placeholder") {
+            inputElement.setAttribute(prop, itemConfig[prop]);
+          }
+        }
+
+        // 添加到表单容器
+        formContainer.appendChild(inputElement);
+      });
+    }
+
+    // 调用生成表单项函数
+    generateFormItems(formConfig);
+  </script>
+
+  <script name="身份证">
+    const IdCodeValid = function (code) {
+      //身份证号合法性验证
+      //支持15位和18位身份证号
+      //支持地址编码、出生日期、校验位验证
+      var city = {
+        11: "北京",
+        12: "天津",
+        13: "河北",
+        14: "山西",
+        15: "内蒙古",
+        21: "辽宁",
+        22: "吉林",
+        23: "黑龙江 ",
+        31: "上海",
+        32: "江苏",
+        33: "浙江",
+        34: "安徽",
+        35: "福建",
+        36: "江西",
+        37: "山东",
+        41: "河南",
+        42: "湖北 ",
+        43: "湖南",
+        44: "广东",
+        45: "广西",
+        46: "海南",
+        50: "重庆",
+        51: "四川",
+        52: "贵州",
+        53: "云南",
+        54: "西藏 ",
+        61: "陕西",
+        62: "甘肃",
+        63: "青海",
+        64: "宁夏",
+        65: "新疆",
+        71: "台湾",
+        81: "香港",
+        82: "澳门",
+        91: "国外 ",
+      };
+      var row = {
+        pass: true,
+        msg: "验证成功",
+      };
+      // var p = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/ ;正则
+      if (
+        !code ||
+        !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/.test(
+          code
+        )
+      ) {
+        row = {
+          pass: false,
+          msg: "身份证号格式错误",
+        };
+      } else if (!city[code.substr(0, 2)]) {
+        row = {
+          pass: false,
+          msg: "身份证号地址编码错误",
+        };
+      } else {
+        //18位身份证需要验证最后一位校验位
+        if (code.length == 18) {
+          code = code.split("");
+          //∑(ai×Wi)(mod 11)
+          //加权因子
+          var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+          //校验位
+          var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+          var sum = 0;
+          var ai = 0;
+          var wi = 0;
+          for (var i = 0; i < 17; i++) {
+            ai = code[i];
+            wi = factor[i];
+            sum += ai * wi;
+          }
+          if (parity[sum % 11] != code[17].toUpperCase()) {
+            row = {
+              pass: false,
+              msg: "身份证号校验位错误",
+            };
+          }
+        }
+      }
+      return row;
+    };
+
+    IdCodeValid("xxx");
+    解释代码;
+  </script>
+</html>

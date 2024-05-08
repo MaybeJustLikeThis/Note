@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function exeCode(counter) {
+        const promise = new Promise((resolve, reject) => {
+          //异步任务
+          setTimeout(() => {
+            if (counter > 0) {
+              console.log("hello");
+              //在某一个时刻只需要回调传入的函数
+              let i = 2;
+              resolve(i);
+            } else {
+              reject("有问题");
+            }
+          }, 3000);
+        });
+        return promise;
+      }
+
+      //ES5之前,处理异步的代码就是都是这样的
+      const promise = exeCode(100);
+      promise.then((value) => {
+        console.log(value);
+      });
+      promise.catch((err) => {
+        console.log(err);
+      });
+    </script>
+  </body>
+</html>

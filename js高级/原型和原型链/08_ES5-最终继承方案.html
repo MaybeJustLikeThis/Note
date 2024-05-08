@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 满足什么条件：
+      //     1.必须创造出来一个对象
+      //     2.这个对象的隐式原型必须指向父类的显式原型
+      //     3.将这个对象赋值给子类的显式原型
+
+      function Perosn() {}
+
+      function Student() {}
+
+      {
+        //方案一
+        var obj = {};
+        //这样写可能会有兼容性问题
+        //obj.__proto__ = Perosn.prototype;
+        //建议这样写
+        Object.setPrototypeOf(obj, Perosn.prototype);
+        Student.prototype = obj;
+      }
+
+      {
+        //方案二
+        function F() {}
+
+        F.prototype = Perosn.prototype;
+        Student.prototype = new F();
+      }
+
+      {
+        //方案三
+        var obj = Object.create(Perosn.prototype);
+        console.log(obj.__proto__ === Perosn.prototype);
+        Student.prototype = obj;
+      }
+
+      //封装函数(完整版)
+      function createObject(obj) {
+        function F() {}
+        F.prototype = obj;
+        return new F();
+      }
+
+      function inherit(subtype, supertype) {
+        subtype.prototype = Object.createObject(supertype.prototype);
+        Object.defineProperty(subtype.prototype, "constructor", {
+          enumerable: false, //构造器函数最好不要遍历
+          configurable: true,
+          writable: true,
+          value: subtype,
+        });
+      }
+      
+      //新版本可用(寄生式函数 )
+      function inherit(subtype, supertype) {
+        subtype.prototype = Object.create(supertype.prototype);
+        Object.defineProperty(subtype.prototype, "constructor", {
+          enumerable: false, //构造器函数最好不要遍历
+          configurable: true,
+          writable: true,
+          value: subtype,
+        });
+      }
+    </script>
+  </body>
+</html>
