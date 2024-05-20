@@ -123,3 +123,12 @@ function calculateSum(a: number, b: number): void {
 ```
 
 在这个示例中，我们定义了两个函数 greet 和 calculateSum，它们的返回类型都被标记为 "void"，因为它们并不返回任何值。
+
+### never类型
+
+开发中很少定义never类型 ，开发框架时候可能会用到never类型;
+
+封装类型工具时可能用到
+
+给同事看的 ,在扩展工具时 对其他case直接报错
+ 

@@ -39,12 +39,15 @@
         const _throttle = function (args) {
           //获取当前时间
           const nowTime = new Date().getTime();
-          //对立即执行控制
+          //不立即执行控制
           if (!leading && startTime === 0) {
             startTime = nowTime;
           }
+          // console.log(startTime, "222");
           //2.计算需要等待的时间
           const waitTime = interval - (nowTime - startTime);
+
+          //第一次starttime是0,后面是很大的数,算差值
           if (waitTime <= 0) {
             fn.apply(this, args);
             startTime = nowTime;
@@ -56,13 +59,9 @@
     <script>
       const inpueEl = document.querySelector("input");
 
-      inpueEl.oninput = throttle(
-        function () {
-          console.log("发送网络请求", this.value);
-        },
-        3000,
-        false
-      );
+      inpueEl.oninput = throttle(function () {
+        console.log("发送网络请求", this.value);
+      }, 3000);
     </script>
   </body>
 </html>

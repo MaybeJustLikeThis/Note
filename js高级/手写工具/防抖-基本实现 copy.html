@@ -6,28 +6,31 @@
     <title>Document</title>
   </head>
   <body>
-    <button>按钮</button>
+    <button></button>
     <input type="text" />
 
     <script>
-      function debounece(fn, delay) {
-        let timer = null;
-        return function _debounce(...args) {
-          if (timer) {
-            clearTimeout(timer);
-          }
-          timer = setTimeout(() => {
-            fn.apply(this, args); 
-          }, delay);
-        };
-      }
-    </script>
-    <script>
       const inpueEl = document.querySelector("input");
 
-      let counter = 1;
-      inpueEl.oninput = debounece(function (event) {
-        console.log("发送请求", this.value, event);
+      function thro(fn, delay, head = true) {
+        let startTime = 0;
+        const _thro = function (...args) {
+          const nowTime = new Date().getTime();
+
+          if (!head && startTime == 0) {
+            startTime = nowTime;
+          }
+          const waitTime = delay - (nowTime - startTime);
+
+          if (waitTime <= 0) {
+            fn.apply(this, args);
+            startTime = nowTime;
+          }
+        };
+        return _thro;
+      }
+      inpueEl.oninput = thro(function (event) {
+        console.log("节流", this.value);
       }, 1000);
     </script>
   </body>
