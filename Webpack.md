@@ -98,3 +98,169 @@ css-loader
 只负责解析 css 文件 ，不会将css文件插入到 页面中 
 style-loader
 插入 style样式 
+
+less-loader
+
+在css-loader之后加入
+
+## Webpack图像优化
+
+## 在 Webpack 4 中导入图像
+
+原生 Webpack 4 只能处理标准 JavaScript 模块，因此需要借助 Loader —— 例如 `file-loader`、`url-loader`、`raw-loader` 等完成图像加载操作，实践中我们通常需要按资源类型选择适当加载器，简单介绍：
+
+- [file-loader](https://link.juejin.cn/?target=https%3A%2F%2Fv4.webpack.js.org%2Floaders%2Ffile-loader%2F)：将图像引用转换为 url 语句并生成相应图片文件，例如使用如下配置：
+
+```js
+js复制代码// webpack.config.js
+module.exports = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.(png|jpg)$/,
+      use: ['file-loader']
+    }],
+  },
+};
+```
+
+经过 `file-loader` 处理后，原始图片会被重命名并复制到产物文件夹，同时在代码中插入图片 URL 地址，形如：
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f6384383d6df4060b973bd3ad8f261eb~tplv-k3u1fbpfcp-jj-mark:1512:0:0:0:q75.awebp)
+
+- [url-loader](https://link.juejin.cn/?target=https%3A%2F%2Fv4.webpack.js.org%2Floaders%2Furl-loader%2F)：有两种表现，对于小于阈值 `limit` 的图像直接转化为 base64 编码；大于阈值的图像则调用 `file-loader` 进行加载，例如如下配置：
+
+```js
+js复制代码module.exports = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.(png|jpg)$/,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 1024
+        }
+      }]
+    }],
+  },
+};
+```
+
+经过 `url-loader` 处理后，小于 `limit` 参数即 1024B 的图片会被转译为 Base64 编码，如：
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6d735d771f4c4436bc0b80e145098314~tplv-k3u1fbpfcp-jj-mark:1512:0:0:0:q75.awebp)
+
+对于超过 `limit` 值的图片则直接调用 `file-loader` 完成加载。
+
+`url-loader` 同样适用于大多数图片格式，且能将许多细小的图片直接内嵌进产物中，减少页面运行时需要发出的网络请求数，在 HTTP 1.1 及之前版本中能带来正向的性能收益。
+
+- [raw-loader](https://link.juejin.cn/?target=https%3A%2F%2Fv4.webpack.js.org%2Floaders%2Fraw-loader)：不做任何转译，只是简单将文件内容复制到产物中，适用于 SVG 场景，例如如下配置：
+
+```js
+js复制代码// webpack.config.js
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.svg$/i,
+        use: ['raw-loader'],
+      },
+    ],
+  },
+};
+```
+
+经过 `raw-loader` 处理后，SVG 资源会被直接复制成字符串形式：
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c51ac80e214c41b2b695b2ea71e5ab33~tplv-k3u1fbpfcp-jj-mark:1512:0:0:0:q75.awebp)
+
+> 提示：除 `raw-loader` 外，我们还可以使用如下 Loader 加载 SVG 资源：
+>
+> - [svg-inline-loader](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fsvg-inline-loader)：能够自动删除 SVG 图片中与显式无关的各种原信息，达到压缩效果；
+> - [svg-url-loader](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fsvg-url-loader)：以 [DataURL](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FHTTP%2FBasics_of_HTTP%2FData_URIs) 方式导入 SVG 图片，相比于 Base64 更节省空间；
+> - [react-svg-loader](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Freact-svg-loader)：导入 SVG 图片并自动转化为 React 组件形态，效果类似 [@svgr/webpack](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40svgr%2Fwebpack)；
+> - [vue-svg-loader](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fvue-svg-loader)：导入 SVG 图片并自动转化为 Vue 组件形态。
+
+## 在 Webpack 5 中导入图像
+
+上述 `file-loader`、`url-loader`、`raw-loader` 都并不局限于处理图片，它们还可以被用于加载任意类型的多媒体或文本文件，使用频率极高，几乎已经成为标配组件！所以 Webpack5 直接内置了这些能力，开箱即可使用。
+
+用法上，原本需要安装、导入 Loader，Webpack5 之后只需要通过 `module.rules.type` 属性指定[资源类型](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fguides%2Fasset-modules%2F)即可，对比来看：
+
+- `file-loader` 对标到 `type = "asset/resource"'`：
+
+```js
+js复制代码// webpack.config.js
+module.exports = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.(png|jpg)$/,
+-     use: ['file-loader']
++     type: 'asset/resource'
+    }],
+  },
+};
+```
+
+> 提示：默认情况下，`asset/resource` 生成的文件会以 `[hash][ext][query]` 方式重命名，可以通过 [output.assetModuleFilename](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fconfiguration%2Foutput%2F%23outputassetmodulefilename) 属性控制。
+
+- `url-loader` 对标到 `type = "asset"` 或 `type = "asset/inline"`：
+
+```js
+js复制代码module.exports = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.(png|jpg)$/,
+-     use: [{
+-       loader: 'url-loader',
+-       options: {
+-         limit: 1024
+-       }
+-     }]
++     type: "asset",
++     parser: {
++        dataUrlCondition: {
++          maxSize: 1024 // 1kb
++        }
++     }
+    }],
+  },
+};
+```
+
+其中，[module.rules.parser.dataUrlCondition](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fconfiguration%2Fmodule%2F%23ruleparserdataurlcondition) 用于限定文件大小阈值，对标 `url-loader` 的 `limit` 属性。
+
+- `raw-loader` 对标到 `type = "asset/source"`：
+
+```js
+js复制代码module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.svg$/i,
+-       use: ['raw-loader']
++       type: "asset/source"
+      },
+    ],
+  },
+};
+```
+
+补充一下，引入 `module.rules.type` 并不只是为了取代 Loader 那么简单，更重要的目的是在 JavaScript Module 之外增加对其它资源 —— [Asset Module](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fguides%2Fasset-modules%2F) 的原生支持，让 Webpack 有机会介入这些多媒体资源的解析、生成过程，从而有机会实现更标准、高效的资源处理模型。
+
+目前 [`module.rules.type`](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fconfiguration%2Fmodule%2F%23ruletype) 已经支持 JSON、WebAssemsbly、二进制、文本等资源类型，相信在下一个 Webpack 版本中，必然会基于 Asset Module 实现更丰富的资源处理能力。
+
+## 图像优化：压缩
+
+前面介绍的 Loader 与 Asset Modules 都只是解决了图像资源加载 —— 也就是让 Webpack 能够理解、处理图像资源，现实中我们还需要为 Web 页面中的图片做各种优化，提升页面性能，常见的优化方法包括：
+
+- **图像压缩**：减少网络上需要传输的流量；
+- **雪碧图**：减少 HTTP 请求次数；
+- **响应式图片**：根据客户端设备情况下发适当分辨率的图片，有助于减少网络流量；
+- **CDN**：减少客户端到服务器之间的物理链路长度，提升传输效率；
+- 等等。
