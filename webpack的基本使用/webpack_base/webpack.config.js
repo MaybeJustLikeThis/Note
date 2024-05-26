@@ -4,10 +4,14 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/index.js",
+  mode: "development",
+  devtool: false,
+  entry: {
+    index: { import: "./src/index.js", runtime: "common-runtime" },
+  },
   output: {
-    filename: "bundle.js",
+    clean: true,
+    filename: "[name].js",
     path: path.resolve(__dirname, "./build"),
   },
- 
 };

@@ -33,5 +33,11 @@
       console.log(sortedStudents);
       // 输出: ["Charlie", "Alice", "Eve", "Bob", "David"]
     </script>
+    <script>
+      Promise.resolve(1)
+      .then(2)
+      .then(Promise.resolve(3))
+      .then(console.log);
+    </script>
   </body>
 </html>
