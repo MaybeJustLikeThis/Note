@@ -10,8 +10,6 @@
       function foo(name, age) {
         console.log(this, name, age);
       }
-      //   foo().apply("aaa", ["why", 1.8]);
-      //   foo().call("bbb", "kobe", 188);
 
       //1.给函数对象添加方法
       Function.prototype.hyapply = function (thisArg, OtherArgs) {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button>提交</button>
+    <input type="text" />
+
+    <script>
+      function foo(name, age, height) {
+        console.log(this);
+      }
+      
+      Function.prototype.newbind = function (thisArgs, ...otherArgs) {
+        thisArgs =
+          thisArgs === null || thisArgs === undefined
+            ? window
+            : Object(thisArgs);
+
+        Object.defineProperty(thisArgs, "fn", {
+          value: this,
+          configurable: true,
+        });
+
+        return (...newArgs) => {
+          var allArgs = thisArgs.concat(newArgs);
+          const result = this.fn(...allArgs);
+          delete thisArgs.fn;
+          return result;
+        };
+      };
+    </script>
+  </body>
+</html>

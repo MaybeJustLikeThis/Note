@@ -19,7 +19,7 @@ class MyPromise {
         });
       }
     };
-
+   
     // 失败态方法
     const reject = (error) => {
       if (this.status === "pending") {

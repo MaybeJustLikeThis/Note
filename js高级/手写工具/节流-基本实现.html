@@ -9,30 +9,6 @@
     <button>按钮</button>
     <input type="text" />
 
-    <script name="防抖">
-      //1.接收什么参数
-      //回调函数
-      //延迟时间
-      //2.返回什么值
-      //3.内部实现
-      function debounece(fn, delay) {
-        //1 用于记录上一次事件触发的timer
-        let timer = null;
-        //2.触发事件时执行的函数
-        const _debounce = function (...args) {
-          //如有更多次触发 ,取消上一次计时
-          if (timer) clearTimeout(timer);
-
-          timer = setTimeout(() => {
-            fn.apply(this, args);
-            timer = null; //执行过函数之后,将timer置为null
-          }, delay);
-        };
-
-        //返回一个新函数
-        return _debounce;
-      }
-    </script>
     <script name="节流">
       function throttle(fn, interval, leading = true) {
         let startTime = 0;
