@@ -11,28 +11,27 @@
         static REJECTED = "rejected";
         static FULFILLED = "fulfilled";
         static PENDING = "pending";
-
         value = undefined;
         status = Mypromise.PENDING;
-        onFulfilledCallbacks = [];
-        onRejectedCallbacks = [];
+        onFUlFILEDCallbacks = [];
+        onREjectedCallbacks = [];
 
         constructor(execute) {
           const resolve = (value) => {
-            if (this.status == Mypromise.PENDING) {
+            if ((this.status = Mypromise.PENDING)) {
               this.value = value;
               this.status = Mypromise.FULFILLED;
-              this.onFulfilledCallbacks.forEach((callback) => {
-                callback(value);
+              this.onFUlFILEDCallbacks.forEach((callbacks) => {
+                callbacks(value);
               });
             }
           };
           const reject = (value) => {
-            if (this.status == Mypromise.PENDING) {
+            if ((this.status = Mypromise.PENDING)) {
               this.value = value;
               this.status = Mypromise.REJECTED;
-              this.onRejectedCallbacks.forEach((callback) => {
-                callback(value);
+              this.onREjectedCallbacks.forEach((callbacks) => {
+                callbacks(value);
               });
             }
           };
@@ -45,11 +44,12 @@
 
         then(onFulfilled, onRejected) {
           onFulfilled =
-            typeof onFulfilled === "function"
+            typeof onFulfilled == "function"
               ? onFulfilled
               : (onFulfilled) => {
                   onFulfilled;
                 };
+
           onRejected =
             typeof onRejected === "function"
               ? onRejected
@@ -58,8 +58,7 @@
                 };
 
           return new Mypromise((resolve, reject) => {
-            //处理已完成状态
-            if (this.status === Mypromise.FULFILLED) {
+            if (this.status == Mypromise.FULFILLED) {
               try {
                 queueMicrotask(() => {
                   const result = onFulfilled(this.value);
@@ -69,51 +68,10 @@
                 reject(err);
               }
             } else if (this.status === Mypromise.REJECTED) {
-              try {
-                queueMicrotask(() => {
-                  const result = onRejected(this.value);
-                  this.handlePromiseResult(result, resolve, reject);
-                });
-              } catch (err) {
-                reject(err);
-              }
-            } else {
-              this.onFulfilledCallbacks.push((value) => {
-                queueMicrotask(() => {
-                  const result = onRejected(this.value);
-                  this.handlePromiseResult(result, resolve, reject);
-                });
-              });
-              this.onRejectedCallBacks.push((value) => {
-                queueMicrotask(() => {
-                  const result = onRejected(value);
-                  this.handlePromiseResult(result, resolve, reject);
-                });
-              });
             }
           });
         }
-        handlePromiseResult(result, resolve, reject) {
-          // 如果result是一个MyPromise实例，则调用其then方法并传入resolve和reject作为参数。
-          if (result instanceof Mypromise) {
-            result.then(resolve, reject);
-          } else {
-            resolve(result);
-          }
-        }
-        static resolve = (value) => {
-          return new Mypromise((resolve, reject) => {
-            resolve(value);
-          });
-        };
-
-        static reject = (value) => {
-          return new Mypromise((resolve, reject) => {
-            reject(value);
-          });
-        };
       }
-
       //测试
       // 创建一个简单的异步函数，用于返回一个Promise实例
       const promis = new Mypromise((resolve, reject) => {

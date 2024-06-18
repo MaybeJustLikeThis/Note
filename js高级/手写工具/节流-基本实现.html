@@ -12,23 +12,17 @@
     <script name="节流">
       function throttle(fn, interval, leading = true) {
         let startTime = 0;
-        const _throttle = function (args) {
-          //获取当前时间
+        function _throttle(args) {
           const nowTime = new Date().getTime();
-          //不立即执行控制
-          if (!leading && startTime === 0) {
+          if (leading == false && startTime == 0) {
             startTime = nowTime;
           }
-          // console.log(startTime, "222");
-          //2.计算需要等待的时间
-          const waitTime = interval - (nowTime - startTime);
-
-          //第一次starttime是0,后面是很大的数,算差值
-          if (waitTime <= 0) {
+          const delay = interval - (nowTime - startTime);
+          if (delay <= 0) {
             fn.apply(this, args);
             startTime = nowTime;
           }
-        };
+        }
         return _throttle;
       }
     </script>
@@ -37,7 +31,7 @@
 
       inpueEl.oninput = throttle(function () {
         console.log("发送网络请求", this.value);
-      }, 3000);
+      }, 2000);
     </script>
   </body>
 </html>

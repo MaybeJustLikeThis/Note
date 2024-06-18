@@ -16,21 +16,16 @@
       //2.返回什么值
       //3.内部实现
       function debounece(fn, delay) {
-        //1 用于记录上一次事件触发的timer
         let timer = null;
-        //2.触发事件时执行的函数
-        const _debounce = function (...args) {
-          //如有更多次触发 ,取消上一次计时
+        function _debounece(...args) {
           if (timer) clearTimeout(timer);
 
           timer = setTimeout(() => {
-            fn.apply(this, args); //以debounce函数的上下文（即this的值）执行fn函数，并将args数组中的元素作为参数传递给fn函数。
-            timer = null; //执行过函数之后,将timer置为null
+            fn.apply(this, args);
+            timer = null;
           }, delay);
-        };
-
-        //返回一个新函数
-        return _debounce;
+        }
+        return _debounece;
       }
     </script>
     <script>

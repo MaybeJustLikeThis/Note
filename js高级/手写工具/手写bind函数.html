@@ -1,27 +1,24 @@
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Document</title>
-        </head>
-        <body>
-          <script>
-            function foo(name, age, height) {
-              console.log(this, name, age, height);
-            }
-          
-            //   var newfoo = foo.bind({ name: "kobe" }, "why", 18);
-            //   newfoo(188);
-          
-            Function.prototype.hybind = function (thisArg, ...otherArgs) {
-              thisArg =
-                thisArg === null || thisArg === undefined ? window : Object(thisArg);
-            
-              Object.defineProperty(thisArg, "fn", {
-                configurable: true,
-                enumerable: false,
-                writable: false,
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function foo(name, age, height) {
+        console.log(this, name, age, height);
+      }
+      
+      Function.prototype.hybind = function (thisArg, ...otherArgs) {
+        thisArg =
+          thisArg === null || thisArg === undefined ? window : Object(thisArg);
+
+        Object.defineProperty(thisArg, "fn", {
+          configurable: true,
+          enumerable: false,
+          writable: false,
           value: this, //把值绑定 foo
         });
 

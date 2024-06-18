@@ -1,3 +1,13 @@
+# 核心配置
+
+- `entry`：声明项目入口文件，Webpack 会从这个文件开始递归找出所有文件依赖；
+- `output`：声明构建结果的存放位置；
+- `target`：用于配置编译产物的目标运行环境，支持 `web`、`node`、`electron` 等值，不同值最终产物会有所差异；
+- `mode`：编译模式短语，支持 `development`、`production` 等值，Webpack 会根据该属性推断默认配置；
+- `optimization`：用于控制如何优化产物包体积，内置 Dead Code Elimination、Scope Hoisting、代码混淆、代码压缩等功能；
+- `module`：用于声明模块加载规则，例如针对什么类型的资源需要使用哪些 Loader 进行处理；
+- `plugin`：Webpack 插件列表。
+
 ## Path
 
 Mac os,linux,window 对于路径的分割是不一样的

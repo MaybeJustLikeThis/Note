@@ -13,25 +13,25 @@
       function foo(name, age, height) {
         console.log(this);
       }
-      
-      Function.prototype.newbind = function (thisArgs, ...otherArgs) {
-        thisArgs =
-          thisArgs === null || thisArgs === undefined
-            ? window
-            : Object(thisArgs);
 
-        Object.defineProperty(thisArgs, "fn", {
-          value: this,
-          configurable: true,
+      Function.prototype.mybind = function (thisArg, ...otherArg) {
+        thisArg =
+          thisArg === null || thisArg === undefined ? window : Object(thisArg);
+
+        Object.defineProperty(thisArg, "fn", {
+          value: this, //把值绑定 foo
         });
 
-        return (...newArgs) => {
-          var allArgs = thisArgs.concat(newArgs);
-          const result = this.fn(...allArgs);
-          delete thisArgs.fn;
-          return result;
+        return (...newargs) => {
+          var allArgs = otherArg.concat(newargs);
+          const res = thisArg.fn(...allArgs);
+          delete thisArg.fn;
+          return res;
         };
       };
+
+      var newFoo = foo.mybind({ name: "why" }, "kobe", 18);
+      newFoo(188);
     </script>
   </body>
 </html>

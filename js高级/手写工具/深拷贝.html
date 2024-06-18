@@ -27,7 +27,7 @@
       //浅拷贝函数
       // {
       //   const obj3 = Object.assign({}, info);
-      //   obj3.friend.name = "222";
+      //   obj3.friend.name = "22";
       //   console.log(info.friend.name);
       // }
 
@@ -37,38 +37,33 @@
 
       //3.2 自建深拷贝函数
       //循环引用的处理
-      const map = new WeakMap();
 
-      function deepCopy(originValue) {
-        if (!isObject(originValue)) {
+      function deepCopy(originValue, map = new WeakMap()) {
+        if (originValue == null || typeof originValue !== "object") {
           return originValue;
         }
 
-        if (map.get(originValue)) {
+        if (map.has(originValue)) {
           return map.get(originValue);
         }
-        //对数组类型的处理
-        const newObj = Array.isArray(originValue) ? [] : {};
 
-        map.set(originValue, newObj);
+        const newobj = Array.isArray(originValue) ? [] : {};
+
+        map.set(originValue, newobj);
 
         for (const key in originValue) {
-          newObj[key] = deepCopy(originValue[key]);
+          newobj[key] = deepCopy(originValue[key], map);
         }
-        return newObj;
-      }
-
-      function isObject(value) {
-        const valueType = typeof value;
-        return (
-          value !== null && (valueType === "object" || valueType === "function")
-        );
+        return newobj;
       }
 
       const books = [
         {
           name: "黄金时代",
           price: 28,
+          children: {
+            aaa: "111",
+          },
         },
         {
           name: "你不知道的js",

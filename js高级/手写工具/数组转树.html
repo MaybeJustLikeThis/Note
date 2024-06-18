@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function buildTree(arr, parentId = null) {
+        const tree = {};
+        for (const item of arr) {
+          if (item.parentId == parentId) {
+            const children = buildTree(arr, item.id);
+            tree[item.id] = {
+              ...item,
+              children: Object.keys(children).length > 0 ? children : [],
+            };
+
+            if (item.parentId == null) {
+              return tree[item.id];
+            }
+          }
+        }
+        return tree;
+      }
+
+      // 使用示例
+      const data = [
+        { id: 1, name: "A", parentId: null },
+        { id: 2, name: "B", parentId: 1 },
+        { id: 3, name: "C", parentId: 1 },
+        { id: 4, name: "D", parentId: 2 },
+        { id: 5, name: "E", parentId: 2 },
+        { id: 6, name: "F", parentId: 3 },
+      ];
+
+      const tree = buildTree(data);
+      console.log(tree);
+    </script>
+  </body>
+</html>
