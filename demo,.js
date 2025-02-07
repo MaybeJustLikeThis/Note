@@ -1,53 +1,77 @@
-/**
- * @param {ListNode} head
- * @param {number} left
- * @param {number} right
- * @return {ListNode}
- */
-function ListNode(val, next) {
-  this.val = val === undefined ? 0 : val;
-  this.next = next === undefined ? null : next;
-}
-var reverseBetween = function (head, left, right) {
-  const dummynode = new ListNode(-1);
-  dummynode.next = head;
+// function throttle(fn, interval, leading = true) {
+//   let timer = 0;
+//   function _throttle(...paylaod) {
+//     const nowTime = new Date().getTime();
+//     if (leading === false && timer === 0) {
+//       timer = nowTime;
+//     }
+//     let delay = interval - (nowTime - timer);
+//     if (delay <= 0) {
+//       fn.apply(this, paylaod);
+//       timer = nowTime
+//     }
+//   }
+//   return _throttle
+// }
 
-  let pre = dummynode;
-  for (let i = 0; i < left - 1; i++) {
-    pre = pre.next;
-  }
+// function debounece(fn, delay) {
+//   let timer = null;
+//   function _debounece(...args) {
+//     if (timer) clearTimeout(timer);
 
-  let rightNode = dummynode;
-  for (let i = 0; i < right-1; i++) {
-    rightNode = rightNode.next;
-  }
+//     timer = setTimeout(() => {
+//       fn.apply(this, args);
+//       timer = null;
+//     }, delay);
+//   }
+//   return _debounece;
+// }
 
-  let leftNode = pre.next;
-  let curr = rightNode.next;
+// function deepCopy(originValue, map = new WeakMap()) {
+//   if (originValue == null || typeof originValue !== "object") {
+//     return originValue
+//   }
 
-  pre.next = null;
-  rightNode.next = null;
+//   if (map.has(originValue)) {
+//     return map.get(originValue);
+//   }
 
-  reverseList(leftNode);
+//   const newobj = Array.isArray(originValue) ? [] : {};
 
-  pre.next = rightNode;
-  leftNode.next = curr;
-  return dummynode.next;
-};
+//   map.set(originValue, newobj);
 
-const reverseList = (head) => {
-  let pre = null;
-  let cur = head;
-  while (cur) {
-    const next = cur.next;
-    cur.next = pre;
-    pre = cur;
-    cur = next;
-  }
-};
+//   for (const key in originValue) {
+//     newobj[key] = deepCopy(originValue[key], map);
+//   }
 
-let head = [1, 2, 3, 4, 5],
-  left = 2,
-  right = 4;
-reverseBetween(head, left, right);
-console.log(reverseBetween(head, left, right));
+//   return newobj;
+// }
+
+//  Function.prototype.hybind = function (thisArg, ...otherArgs) {
+//    thisArg =
+//      thisArg === null || thisArg === undefined ? window : Object(thisArg);
+
+//    Object.defineProperty(thisArg, "fn", {
+//      // configurable: true,
+//      // enumerable: false,
+//      // writable: false,
+//      value: this, //把值绑定 foo
+//    });
+
+//    return (...newargs) => {
+//      var allArgs = otherArgs.concat(newargs);
+//      const result = thisArg.fn(...allArgs);
+//      delete thisArg.fn;
+//      return result;
+//    };
+//  };
+
+const obj = {};
+const b = { key: "b" };
+const c = { key: "c" };
+obj[b] = 123;
+obj[c] = 456;
+console.log(obj[b]);
+
+console.log(1 < 2 < 3); // true
+console.log(3 > 2 > 1); // false

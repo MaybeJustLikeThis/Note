@@ -51,9 +51,10 @@
 
         map.set(originValue, newobj);
 
-        for (const key in originValue) {
-          newobj[key] = deepCopy(originValue[key], map);
+        for (const key in originValue){
+          newobj[key] = deepCopy(originValue[key],map);
         }
+        
         return newobj;
       }
 

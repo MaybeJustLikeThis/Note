@@ -11,21 +11,23 @@
 
     <script name="节流">
       function throttle(fn, interval, leading = true) {
-        let startTime = 0;
-        function _throttle(args) {
-          const nowTime = new Date().getTime();
-          if (leading == false && startTime == 0) {
-            startTime = nowTime;
+        let timer = null;
+
+        function _throttle(...payload) {
+          const nowtime = new Date().getTime();
+          if (leading == false && timer == 0) {
+            timer = nowtime;
           }
-          const delay = interval - (nowTime - startTime);
+          let delay = interval - (nowtime - timer);
           if (delay <= 0) {
-            fn.apply(this, args);
-            startTime = nowTime;
+            fn.apply(this, payload);
+            timer = nowtime;
           }
         }
         return _throttle;
       }
     </script>
+
     <script>
       const inpueEl = document.querySelector("input");
 

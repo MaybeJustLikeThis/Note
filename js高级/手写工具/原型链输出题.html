@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //原型链输出
+
+      function F() {}
+
+      const f = new F();
+
+      console.log(F.prototype.constructor); //F(){}
+
+      console.log(F.__proto__ === Function.__proto__); //Fuction.prototype
+
+      console.log(F.prototype.__proto__); //Object.prototype
+
+      console.log(f.__proto__); //F.prototype
+
+      console.log(Function.prototype.__proto__); //Object.prototype
+
+      console.log(Object.prototype.__proto__); //null
+    </script>
+  </body>
+</html>

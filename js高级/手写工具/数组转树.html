@@ -11,7 +11,9 @@
         const tree = {};
         for (const item of arr) {
           if (item.parentId == parentId) {
+
             const children = buildTree(arr, item.id);
+            
             tree[item.id] = {
               ...item,
               children: Object.keys(children).length > 0 ? children : [],

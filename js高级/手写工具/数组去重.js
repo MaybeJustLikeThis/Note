@@ -16,7 +16,7 @@ console.log(foo_arr);
 
 //第二种
 function foo(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
+  return arr.filter((item, index)=> arr.indexOf(item) === index);
 }
 // const foo_arr = foo(array);
 // console.log(foo_arr);

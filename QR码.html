@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input,
+        button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 5px;
+        }
+
+        #canvas-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        canvas {
+            border: 1px solid #000;
+            width: 600px;
+            /* 缩小显示尺寸 */
+            height: 600px;
+            /* 缩小显示尺寸 */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>二维码生成器</h1>
+    <input type="text" id="text" placeholder="输入要生成二维码的文本">
+    <button onclick="generateQRCode()">生成二维码</button>
+    <br><br>
+    <input type="file" id="upload" accept="image/*" onchange="previewLogo()">
+    <br><br>
+    <div id="canvas-container">
+        <canvas id="qrcode-canvas" width="3840" height="3840"></canvas>
+    </div>
+
+    <!-- 引入QRCode.js库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        var logoImage;
+
+        function generateQRCode() {
+            var text = document.getElementById('text').value;
+            var canvas = document.getElementById('qrcode-canvas');
+            var context = canvas.getContext('2d');
+            var size = 3840; // 4K 分辨率
+            var qrCode = new QRCode(document.createElement('div'), {
+                text: text,
+                width: size,
+                height: size
+            });
+
+            setTimeout(function () {
+                var qrCanvas = qrCode._oDrawing._elCanvas;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(qrCanvas, 0, 0, size, size, 0, 0, canvas.width, canvas.height);
+
+                if (logoImage) {
+                    var logoSize = 960; // logo 大小，确保在 4K 分辨率下清晰
+                    var logoX = (canvas.width - logoSize) / 2;
+                    var logoY = (canvas.height - logoSize) / 2;
+                    context.save();
+                    context.beginPath();
+                    context.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2, true);
+                    context.closePath();
+                    context.clip();
+                    context.drawImage(logoImage, logoX, logoY, logoSize, logoSize);
+                    context.restore();
+                }
+            }, 100);
+        }
+
+        function previewLogo() {
+            var file = document.getElementById('upload').files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                logoImage = new Image();
+                logoImage.onload = function () {
+                    if (logoImage.width > 960 || logoImage.height > 960) {
+                        // 缩放logo至合适的大小
+                        var scale = Math.min(960 / logoImage.width, 960 / logoImage.height);
+                        var width = logoImage.width * scale;
+                        var height = logoImage.height * scale;
+                        var canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(logoImage, 0, 0, width, height);
+                        logoImage.src = canvas.toDataURL();
+                    }
+                }
+                logoImage.src = reader.result;
+            }
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -43,6 +43,8 @@
         thisArg =
           thisArg === null || thisArg === undefined ? window : Object(thisArg);
 
+        thisArg =
+          thisArg === null || thisArg === undefined ? window : Object(thisArg);
         // thisArg.fn = this;
         Object.defineProperty(thisArg, "fn", {
           configurable: true,
@@ -54,7 +56,7 @@
 
         delete thisArg.fn;
       };
-      
+
       foo.hycall({ name: "why" }, "kobe", 30);
     </script>
   </body>

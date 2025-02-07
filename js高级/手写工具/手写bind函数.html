@@ -16,9 +16,9 @@
           thisArg === null || thisArg === undefined ? window : Object(thisArg);
 
         Object.defineProperty(thisArg, "fn", {
-          configurable: true,
-          enumerable: false,
-          writable: false,
+          // configurable: true,
+          // enumerable: false,
+          // writable: false,
           value: this, //把值绑定 foo
         });
 
@@ -32,6 +32,9 @@
 
       var newFoo = foo.hybind({ name: "why" }, "kobe", 18);
       newFoo(188);
+
+
+      
     </script>
   </body>
 </html>
