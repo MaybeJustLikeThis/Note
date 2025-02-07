@@ -265,6 +265,8 @@ js复制代码module.exports = {
 
 目前 [`module.rules.type`](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fconfiguration%2Fmodule%2F%23ruletype) 已经支持 JSON、WebAssemsbly、二进制、文本等资源类型，相信在下一个 Webpack 版本中，必然会基于 Asset Module 实现更丰富的资源处理能力。
 
+asset/resource 是将文件重命名之后引用进入js，会多网络请求。
+asset/inline 是将图片变成base64格式，通过这种方式减少网络请求，缺点是会延长js文件的加载时间。
 ## 图像优化：压缩
 
 前面介绍的 Loader 与 Asset Modules 都只是解决了图像资源加载 —— 也就是让 Webpack 能够理解、处理图像资源，现实中我们还需要为 Web 页面中的图片做各种优化，提升页面性能，常见的优化方法包括：
@@ -274,3 +276,151 @@ js复制代码module.exports = {
 - **响应式图片**：根据客户端设备情况下发适当分辨率的图片，有助于减少网络流量；
 - **CDN**：减少客户端到服务器之间的物理链路长度，提升传输效率；
 - 等等。
+
+
+
+# 构建过程提速策略
+
+## 开启缓存使babel-loader效率提升两倍
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+       loader: 'babel-loader?cacheDirectory=true',//对loader增加参数
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    }
+  ]
+}
+```
+
+## 针对第三方库
+
+使用DLLPlugin
+
+DllPlugin 是基于 Windows 动态链接库（dll）的思想被创作出来的。这个插件会把第三方库单独打包到一个文件中，这个文件就是一个单纯的依赖库。**这个依赖库不会跟着你的业务代码一起被重新打包，只有当依赖自身发生版本变化时才会重新打包**。
+
+用 DllPlugin 处理文件，要分两步走：
+
+- 基于 dll 专属的配置文件，打包 dll 库
+- 基于 webpack.config.js 文件，打包业务代码
+
+```js
+//webpack.dll.config.js 
+const path = require('path')
+const webpack = require('webpack')
+
+module.exports = {
+    entry: {
+      // 依赖的库数组
+      vendor: [
+        'prop-types',
+        'babel-polyfill',
+        'react',
+        'react-dom',
+        'react-router-dom',
+      ]
+    },
+    output: {
+      path: path.join(__dirname, 'dist'),
+      filename: '[name].js',
+      library: '[name]_[hash]',
+    },
+    plugins: [
+      new webpack.DllPlugin({
+        // DllPlugin的name属性需要和libary保持一致
+        name: '[name]_[hash]',
+        path: path.join(__dirname, 'dist', '[name]-manifest.json'),
+        // context需要和webpack.config.js保持一致
+        context: __dirname,
+      }),
+    ],
+}
+```
+
+```js
+webpack.config.js
+const path = require('path');
+const webpack = require('webpack')
+module.exports = {
+  mode: 'production',
+  // 编译入口
+  entry: {
+    main: './src/index.js'
+  },
+  // 目标文件
+  output: {
+    path: path.join(__dirname, 'dist/'),
+    filename: '[name].js'
+  },
+  // dll相关配置
+  plugins: [
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      // manifest就是我们第一步中打包出来的json文件
+      manifest: require('./dist/vendor-manifest.json'),
+    })
+  ]
+}
+```
+
+## Happypack---将loader由单进程转为多进程
+
+```js
+const HappyPack = require('happypack')
+// 手动创建进程池
+const happyThreadPool =  HappyPack.ThreadPool({ size: os.cpus().length })
+
+module.exports = {
+  module: {
+    rules: [
+      ...
+      {
+        test: /\.js$/,
+        // 问号后面的查询参数指定了处理这类文件的HappyPack实例的名字
+        loader: 'happypack/loader?id=happyBabel',
+        ...
+      },
+    ],
+  },
+  plugins: [
+    ...
+    new HappyPack({
+      // 这个HappyPack的“名字”就叫做happyBabel，和楼上的查询参数遥相呼应
+      id: 'happyBabel',
+      // 指定进程池
+      threadPool: happyThreadPool,
+      loaders: ['babel-loader?cacheDirectory']//启动缓存
+    })
+  ],
+}
+```
+
+# 构建结果体积压缩
+
+## 构建大小查看工具
+
+[webpack-bundle-analyzer](https://link.juejin.cn/?target=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fwebpack-bundle-analyzer)
+
+```js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+ 
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ]
+}
+```
+
+## 删除冗余代码
+
+### tree shaking
+
+
+
