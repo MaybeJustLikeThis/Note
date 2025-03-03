@@ -1,0 +1,15 @@
+# POST http://localhost:98/post HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "name": "张三",
+#     "age": 18
+# }
+
+GET http://localhost:98/get?name=张三&age=18 HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "张三",
+    "age": 18
+}

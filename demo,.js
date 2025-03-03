@@ -66,12 +66,17 @@
 //    };
 //  };
 
-const obj = {};
-const b = { key: "b" };
-const c = { key: "c" };
-obj[b] = 123;
-obj[c] = 456;
-console.log(obj[b]);
+// const obj = {};
+// const b = { key: "b" };
+// const c = { key: "c" };
+// obj[b] = 123;
+// obj[c] = 456;
+// console.log(obj[b]);
 
-console.log(1 < 2 < 3); // true
-console.log(3 > 2 > 1); // false
+// console.log(1 < 2 < 3); // true
+// console.log(3 > 2 > 1); // false
+
+// const os = require("os");
+
+// console.log(os.cpus());
+

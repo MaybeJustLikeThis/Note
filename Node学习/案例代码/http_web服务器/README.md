@@ -1,0 +1,5 @@
+1.请求方式 POST GET PUT DELETE PATCH OPTION HEAD
+
+2.路由
+
+3.传参 

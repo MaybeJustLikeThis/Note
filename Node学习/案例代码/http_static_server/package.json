@@ -1,0 +1,12 @@
+{
+  "name": "http-static-server",
+  "version": "1.0.0",
+  "description": "HTTP static server demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "mime": "^3.0.0"
+  }
+} 
