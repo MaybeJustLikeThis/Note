@@ -26,5 +26,6 @@ http.createServer((req, res) => {
         }
     }
 }).listen(98, () => {
-  console.log('服务器启动成功') 
+    console.log('服务器启动成功') 
+    console.log('http://localhost:98')
 })
