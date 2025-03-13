@@ -31,75 +31,42 @@ Promise.myAll = function (porms) {
   return p;
 };
 
-Promise.myAll = function (proms) {
-  let res, rej;
-  const p = new Promise((resolve, reject) => {
-    res = resolve;
-    rej = reject;
-  });
-  let count = 0;
-  const result = [];
-  let fulfilledCount = 0;
-  let i = 0;
-  for (const prom of proms) {
-    const index = i;
-    i++;
-    count++;
-    Promise.resolve(prom).then((data) => {
-      result[index] = data;
-      fulfilledCount++;
-      if (fulfilledCount == count) {
-        res(result);
-      }
-    }, rej);
-  }
-  if (count == 0) {
-    res(result);
-  }
-  return p;
-};
-Promise.myAll([1, 2, 34, Promise.resolve(222)]).then(
-  (datas) => {
-    console.log(datas);
-  },
-  (err) => {
-    console.log(err);
-  }
-);
 
-Promise.myall = function (proms) {
-  let res, rej;
-  const p = new Promise((resolve, reject) => {
-    res = resolve;
-    rej = reject;
-  });
-  const result = [];
-  let count = 0;
-  let i = 0;
-  let fulfilledCount = 0;
-  for (const prom of proms) {
-    const index = i;
-    i++;
-    count++;
-    Promise.resolve(prom).then((data) => {
-      result[index] = data;
-      fulfilledCount++;
-      if (fulfilledCount === count) {
-        res(result);
-      }
-    }, rej);
-  }
-  if (count === 0) {
-    res(result);
-  }
-  return p;
-};
 
-Promise.myall([1, 2, 34, Promise.resolve(222)]).then(
-  (datas) => {
-    console.log(datas);
-  },
-  (err) => {
-    console.log(err);
-  }
-);
+//手写Pomise.all
+function myPromiseAll(promises) {
+    return new Promise((resolve, reject) => {
+        // 如果传入的不是数组，直接拒绝
+        if (!Array.isArray(promises)) {
+            return reject(new TypeError('参数必须是数组'));
+        }
+        
+        const results = [];
+        let completed = 0;
+        
+        // 处理空数组的情况
+        if (promises.length === 0) {
+            return resolve(results);
+        }
+        
+        // 遍历所有promise
+        promises.forEach((promise, index) => {
+            // 处理非Promise值
+            Promise.resolve(promise)
+                .then(value => {
+                    // 保持结果顺序
+                    results[index] = value;
+                    completed++;
+                    
+                    // 所有promise都已完成
+                    if (completed === promises.length) {
+                        resolve(results);
+                    }
+                })
+                .catch(error => {
+                    // 任何一个promise失败，整个myPromiseAll就失败
+                    reject(error);
+                });
+        });
+    });
+}
