@@ -43,19 +43,19 @@ function foo(url) {
 
 console.log(foo(url));
 
-//字符中间加",'
-const qbc = "123456789";
-function formatNumber(input) {
-  return input.split("").reduce((acc, curr, i) => {
-    if (i > 0 && i % 3 === 0) {
-      acc = acc + ",";
-    }
-    return acc + curr;
-  }, "");
+//千分位分隔
+function format(num) {
+    let str = num + '';
+    return str.split('').reverse().reduce((prev, next, index) => {
+        return ((index % 3) ? next : (next + ',')) + prev;
+    });
 }
 
-const res = formatNumber(qbc);
-console.log(res);
+
+
+let num = 1234567890;
+console.log(format(num)); // 输出: "1,234,567,890" <cite>[19]</cite>
+
 
 function foo_1() {
   let name = "aaa";
@@ -70,3 +70,29 @@ function foo_1() {
 let abc = new foo_1();
 console.log(abc());
 // foo_1()
+
+//合成函数
+function compose(...functions) {
+  if (functions.length === 0) {
+    return (x) => x; // 返回恒等函数
+  }
+  if (functions.length === 1) {
+    return functions[0];
+  }
+  const [first, ...rest] = functions;
+  return (x) => compose(...rest)(first(x));
+}
+
+// 定义一些简单的函数
+const addOne = (x) => x + 1;
+const double = (x) => x * 2;
+const square = (x) => x * x;
+
+// 使用 compose 进行函数合成
+const composedFunction = compose(square, double, addOne);
+
+// 测试合成后的函数
+console.log(composedFunction(3)); //19
+
+
+

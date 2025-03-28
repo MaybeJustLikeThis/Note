@@ -149,18 +149,83 @@
 //   });
 // });
 
-const p = new Promise((err) => {
-  err(1);
-})
-  .catch((err) => {
-    console.log(err);
-  })
-  .then(
-    () => {
-      console.log(2);
-    },
-    () => {
-      console.log(3);
-    }
-  );
-console.log(p);
+// const p = new Promise((err) => {
+//   err(1);
+// })
+//   .catch((err) => {
+//     console.log(err);
+//   })
+//   .then(
+//     () => {
+//       console.log(2);
+//     },
+//     () => {
+//       console.log(3);
+//     }
+//   );
+// console.log(p);
+
+
+// const a = 20;
+// let test = {
+//   a: 10,
+//   init: () => {
+//     console.log(a);
+//     function go() {
+//       this.a = 60;
+//       console.log(a);
+//     }
+//     go.prototype.a = 80;
+//     return go;
+//   }
+// }
+// const p1 = test.init();
+
+// p1();
+
+
+setTimeout(() => {
+  console.log(1);
+}, 20);
+console.log(2);
+setTimeout(() => {
+  console.log(3);
+}, 10);
+console.log(4);
+for (let i = 0; i < 199999990; i++) {
+  // do something
+} // => AA: 80ms左右
+console.log(5);
+setTimeout(() => {
+  console.log(6);
+}, 8);
+console.log(7);
+setTimeout(() => {
+  console.log(8);
+}, 15);
+console.log(9);
+
+// setTimeout(function () {
+//   console.log(1);
+// }, 0);
+// new Promise(function executor(resolve) {
+//   console.log(2);
+//   for (var i = 0; i < 10000; i++) {
+//     resolve(i);
+//   }
+//   console.log(3);
+// }).then(function (i) {
+//   console.log(i);
+// });
+// new Promise(function (resolve) {
+//   console.log(4);
+//   for (var i = 0; i < 10; i++) {
+//     function a() {
+//       resolve(i);
+//     }
+//   }
+//   a();
+// }).then(function (i) {
+//   console.log("",i);
+// });
+// console.log(5);
