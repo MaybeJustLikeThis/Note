@@ -20,6 +20,7 @@ class Publisher {
         console.log("通知观察者");
     }
 
+
 }
 
 class Observer {

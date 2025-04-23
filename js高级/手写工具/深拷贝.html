@@ -37,7 +37,6 @@
 
       //3.2 自建深拷贝函数
       //循环引用的处理
-
       function deepCopy(originValue, map = new WeakMap()) {
         if (originValue == null || typeof originValue !== "object") {
           return originValue;
@@ -56,8 +55,7 @@
         }
         
         return newobj;
-      }
-
+      }      
       const books = [
         {
           name: "黄金时代",
@@ -75,6 +73,67 @@
       const newBook = deepCopy(books);
       console.log(newBook);
       // console.log(deepCopy(info));
+
+      //复杂版
+            function deepCopy(originValue, map = new WeakMap()) {
+        // 处理基本类型和 null
+        if (originValue == null || typeof originValue !== "object") {
+          return originValue;
+        }
+
+        // 处理循环引用
+        if (map.has(originValue)) {
+          return map.get(originValue);
+        }
+
+        // 处理特殊对象类型
+        // 处理 Date
+        if (originValue instanceof Date) {
+          return new Date(originValue);
+        }
+
+        // 处理 RegExp
+        if (originValue instanceof RegExp) {
+          return new RegExp(originValue.source, originValue.flags);
+        }
+
+        // 处理 Set
+        if (originValue instanceof Set) {
+          const newSet = new Set();
+          for (const item of originValue) {
+            newSet.add(deepCopy(item, map));
+          }
+          return newSet;
+        }
+
+        // 处理 Map
+        if (originValue instanceof Map) {
+          const newMap = new Map();
+          for (const [key, value] of originValue) {
+            newMap.set(deepCopy(key, map), deepCopy(value, map));
+          }
+          return newMap;
+        }
+
+        // 创建新的数组或对象
+        const newObj = Array.isArray(originValue) ? [] : {};
+        
+        // 将当前对象添加到 WeakMap 中
+        map.set(originValue, newObj);
+
+        // 递归拷贝所有属性
+        for (const key in originValue) {
+          newObj[key] = deepCopy(originValue[key], map);
+        }
+        
+        // 处理 Symbol 类型的键
+        const symbolKeys = Object.getOwnPropertySymbols(originValue);
+        for (const symbolKey of symbolKeys) {
+          newObj[symbolKey] = deepCopy(originValue[symbolKey], map);
+        }
+        
+        return newObj;
+      }
     </script>
   </body>
 </html>

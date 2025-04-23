@@ -112,8 +112,8 @@
 //   console.log("8");
 // });
 
-//promise.all的实践
 
+//promise.all的实践
 // function runAsync(x) {
 //   const p = new Promise((r) => setTimeout(() => r(x, console.log(x)), 1000));
 //   return p;
@@ -127,6 +127,7 @@
 // Promise.all([runAsync(1), runReject(4), runAsync(3), runReject(2)])
 //   .then((res) => console.log(res))
 //   .catch((err) => console.log(err));
+
 
 //async await的实践
 // async function async1() {
@@ -148,6 +149,7 @@
 //     console.log("timer");
 //   });
 // });
+
 
 // const p = new Promise((err) => {
 //   err(1);
@@ -184,26 +186,27 @@
 // p1();
 
 
-setTimeout(() => {
-  console.log(1);
-}, 20);
-console.log(2);
-setTimeout(() => {
-  console.log(3);
-}, 10);
-console.log(4);
-for (let i = 0; i < 199999990; i++) {
-  // do something
-} // => AA: 80ms左右
-console.log(5);
-setTimeout(() => {
-  console.log(6);
-}, 8);
-console.log(7);
-setTimeout(() => {
-  console.log(8);
-}, 15);
-console.log(9);
+// setTimeout(() => {
+//   console.log(1);
+// }, 20);
+// console.log(2);
+// setTimeout(() => {
+//   console.log(3);
+// }, 10);
+// console.log(4);
+// for (let i = 0; i < 199999990; i++) {
+//   // do something
+// } // => AA: 80ms左右
+// console.log(5);
+// setTimeout(() => {
+//   console.log(6);
+// }, 8);
+// console.log(7);
+// setTimeout(() => {
+//   console.log(8);
+// }, 15);
+// console.log(9);
+
 
 // setTimeout(function () {
 //   console.log(1);
@@ -229,3 +232,12 @@ console.log(9);
 //   console.log("",i);
 // });
 // console.log(5);
+
+
+// let name = 'wqew';
+// let name2 = new String("wqeqweqw")
+// name.age = 11;
+// name2.age = 22;
+// console.log(name.age);
+// console.log(name2.age);
+

@@ -1,4 +1,3 @@
-const { da } = require("element-plus/es/locales.mjs");
 
 //手写promise.all
 Promise.myAll = function (porms) {
